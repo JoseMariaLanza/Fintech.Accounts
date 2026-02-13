@@ -1,0 +1,41 @@
+2025-11-25 06:36:27.852 -03:00 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-11-25 06:36:28.039 -03:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+2025-11-25 06:36:28.044 -03:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-11-25 06:36:28.045 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-11-25 06:36:28.045 -03:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-11-25 06:36:28.050 -03:00 [INF] Applying migration '20251125093012_AddOutboxMessages'.
+2025-11-25 06:36:28.076 -03:00 [INF] Executed DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE outbox_messages (
+    "Id" uuid NOT NULL,
+    "Type" character varying(200) NOT NULL,
+    "RoutingKey" character varying(200) NOT NULL,
+    "Payload" jsonb NOT NULL,
+    "CreatedAtUtc" timestamp with time zone NOT NULL,
+    "Status" integer NOT NULL,
+    "LastError" text,
+    "RetryCount" integer NOT NULL,
+    CONSTRAINT "PK_outbox_messages" PRIMARY KEY ("Id")
+);
+2025-11-25 06:36:28.078 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX ix_created_at ON outbox_messages ("CreatedAtUtc");
+2025-11-25 06:36:28.079 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX ix_status ON outbox_messages ("Status");
+2025-11-25 06:36:28.079 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20251125093012_AddOutboxMessages', '9.0.10');
+2025-11-25 06:36:28.236 -03:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1
+    FROM accounts AS a)

@@ -1,0 +1,394 @@
+2025-11-29 07:35:06.137 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/swagger/index.html - null null
+2025-11-29 07:35:06.320 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-29 07:35:06.321 -03:00 [INF] Hosting environment: Development
+2025-11-29 07:35:06.321 -03:00 [INF] Content root path: C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.API
+2025-11-29 07:35:06.893 -03:00 [INF] HTTP GET /swagger/index.html responded 200 in 271.3965 ms
+2025-11-29 07:35:06.933 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-29 07:35:06.928 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/swagger/index.html - 200 null text/html;charset=utf-8 815.8457ms
+2025-11-29 07:35:06.947 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript; charset=utf-8 9.6981ms
+2025-11-29 07:35:06.995 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/_vs/browserLink - null null
+2025-11-29 07:35:07.137 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/_vs/browserLink - 200 null text/javascript; charset=UTF-8 142.8543ms
+2025-11-29 07:35:07.590 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/swagger/v1/swagger.json - null null
+2025-11-29 07:35:07.609 -03:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 17.3942 ms
+2025-11-29 07:35:07.612 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 21.849ms
+2025-11-29 07:36:22.259 -03:00 [INF] Request starting HTTP/2 POST https://localhost:44318/api/Accounts/transfer - application/json 135
+2025-11-29 07:36:22.270 -03:00 [INF] Executing endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 07:36:22.306 -03:00 [INF] Route matched with {action = "Transfer", controller = "Accounts"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Transfer(Accounts.Application.Accounts.Commands.TransferFundsCommand) on controller Accounts.API.Controllers.AccountsController (Accounts.API).
+2025-11-29 07:36:22.310 -03:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2025-11-29 07:36:24.087 -03:00 [INF] Executed DbCommand (99ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 07:36:24.214 -03:00 [INF] Executed DbCommand (7ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 07:36:24.505 -03:00 [INF] Executed DbCommand (35ms) [Parameters=[@p1='?' (DbType = Guid), @p0='?' (DbType = Decimal), @p3='?' (DbType = Guid), @p2='?' (DbType = Decimal), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?', @p7='?' (DbType = Object), @p8='?', @p9='?' (DbType = DateTime), @p10='?' (DbType = Int32), @p11='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE accounts SET "Balance" = @p0
+WHERE "Id" = @p1;
+UPDATE accounts SET "Balance" = @p2
+WHERE "Id" = @p3;
+INSERT INTO outbox_messages ("Id", "CreatedAtUtc", "LastError", "Payload", "RoutingKey", "SentAtUtc", "Status", "Type")
+VALUES (@p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11)
+RETURNING "RetryCount";
+2025-11-29 07:36:24.599 -03:00 [INF] Executed DbCommand (4ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT o."Id", o."CreatedAtUtc", o."LastError", o."Payload", o."RetryCount", o."RoutingKey", o."SentAtUtc", o."Status", o."Type"
+FROM outbox_messages AS o
+WHERE o."Status" = 0
+ORDER BY o."CreatedAtUtc"
+LIMIT @__p_0
+2025-11-29 07:36:24.614 -03:00 [INF] OutboxDispatcher: dispatching 2 pending messages...
+2025-11-29 07:36:28.914 -03:00 [ERR] OutboxDispatcher: error dispatching OutboxMessage "befc5589-d305-4e88-a9e9-da7385c16042"
+RabbitMQ.Client.Exceptions.BrokerUnreachableException: None of the specified endpoints were reachable
+ ---> System.AggregateException: One or more errors occurred. (Connection failed, host 127.0.0.1:5672)
+ ---> RabbitMQ.Client.Exceptions.ConnectFailureException: Connection failed, host 127.0.0.1:5672
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.OpenAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFrameHandler.CreateAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateFrameHandlerAsync(AmqpTcpEndpoint endpoint, CancellationToken cancellationToken)
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Framing.AutorecoveringConnection.CreateAsync(ConnectionConfig config, IEndpointResolver endpoints, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.GetOrCreateChannelAsync(CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 85
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.PublishAsync[T](T event, String routingKey, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 125
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.DispatchTransferCompletedAsync(OutboxMessage message, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 145
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.DispatchPendingAsync(Int32 batchSize, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 90
+2025-11-29 07:36:33.146 -03:00 [ERR] OutboxDispatcher: error dispatching OutboxMessage "34363e93-398f-4b77-b83a-56bf81c795ae"
+RabbitMQ.Client.Exceptions.BrokerUnreachableException: None of the specified endpoints were reachable
+ ---> System.AggregateException: One or more errors occurred. (Connection failed, host 127.0.0.1:5672)
+ ---> RabbitMQ.Client.Exceptions.ConnectFailureException: Connection failed, host 127.0.0.1:5672
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.OpenAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFrameHandler.CreateAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateFrameHandlerAsync(AmqpTcpEndpoint endpoint, CancellationToken cancellationToken)
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Framing.AutorecoveringConnection.CreateAsync(ConnectionConfig config, IEndpointResolver endpoints, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.GetOrCreateChannelAsync(CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 85
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.PublishAsync[T](T event, String routingKey, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 125
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.DispatchTransferCompletedAsync(OutboxMessage message, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 145
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.DispatchPendingAsync(Int32 batchSize, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 90
+2025-11-29 07:36:33.150 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[@p3='?' (DbType = Guid), @p0='?', @p1='?' (DbType = Int32), @p2='?' (DbType = Int32), @p7='?' (DbType = Guid), @p4='?', @p5='?' (DbType = Int32), @p6='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+UPDATE outbox_messages SET "LastError" = @p0, "RetryCount" = @p1, "Status" = @p2
+WHERE "Id" = @p3;
+UPDATE outbox_messages SET "LastError" = @p4, "RetryCount" = @p5, "Status" = @p6
+WHERE "Id" = @p7;
+2025-11-29 07:36:33.156 -03:00 [INF] Executing StatusCodeResult, setting HTTP status code 204
+2025-11-29 07:36:33.159 -03:00 [INF] Executed action Accounts.API.Controllers.AccountsController.Transfer (Accounts.API) in 10850.0965ms
+2025-11-29 07:36:33.160 -03:00 [INF] Executed endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 07:36:33.161 -03:00 [INF] HTTP POST /api/Accounts/transfer responded 204 in 10897.4034 ms
+2025-11-29 07:36:33.167 -03:00 [INF] Request finished HTTP/2 POST https://localhost:44318/api/Accounts/transfer - 204 null null 10911.2548ms
+2025-11-29 07:38:14.958 -03:00 [INF] Request starting HTTP/2 POST https://localhost:44318/api/Accounts/transfer - application/json 135
+2025-11-29 07:38:14.959 -03:00 [INF] Executing endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 07:38:14.961 -03:00 [INF] Route matched with {action = "Transfer", controller = "Accounts"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Transfer(Accounts.Application.Accounts.Commands.TransferFundsCommand) on controller Accounts.API.Controllers.AccountsController (Accounts.API).
+2025-11-29 07:38:15.030 -03:00 [INF] Executed DbCommand (6ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 07:38:15.042 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 07:38:15.047 -03:00 [INF] Executed DbCommand (2ms) [Parameters=[@p1='?' (DbType = Guid), @p0='?' (DbType = Decimal), @p3='?' (DbType = Guid), @p2='?' (DbType = Decimal), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?', @p7='?' (DbType = Object), @p8='?', @p9='?' (DbType = DateTime), @p10='?' (DbType = Int32), @p11='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE accounts SET "Balance" = @p0
+WHERE "Id" = @p1;
+UPDATE accounts SET "Balance" = @p2
+WHERE "Id" = @p3;
+INSERT INTO outbox_messages ("Id", "CreatedAtUtc", "LastError", "Payload", "RoutingKey", "SentAtUtc", "Status", "Type")
+VALUES (@p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11)
+RETURNING "RetryCount";
+2025-11-29 07:38:15.051 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT o."Id", o."CreatedAtUtc", o."LastError", o."Payload", o."RetryCount", o."RoutingKey", o."SentAtUtc", o."Status", o."Type"
+FROM outbox_messages AS o
+WHERE o."Status" = 0
+ORDER BY o."CreatedAtUtc"
+LIMIT @__p_0
+2025-11-29 07:38:15.052 -03:00 [INF] OutboxDispatcher: dispatching 1 pending messages...
+2025-11-29 07:38:19.236 -03:00 [ERR] OutboxDispatcher: error dispatching OutboxMessage "dea660ae-6a31-4921-acd0-9e108eef213b"
+RabbitMQ.Client.Exceptions.BrokerUnreachableException: None of the specified endpoints were reachable
+ ---> System.AggregateException: One or more errors occurred. (Connection failed, host 127.0.0.1:5672)
+ ---> RabbitMQ.Client.Exceptions.ConnectFailureException: Connection failed, host 127.0.0.1:5672
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.OpenAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFrameHandler.CreateAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateFrameHandlerAsync(AmqpTcpEndpoint endpoint, CancellationToken cancellationToken)
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Framing.AutorecoveringConnection.CreateAsync(ConnectionConfig config, IEndpointResolver endpoints, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.GetOrCreateChannelAsync(CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 85
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.PublishAsync[T](T event, String routingKey, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 125
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.DispatchTransferCompletedAsync(OutboxMessage message, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 145
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.DispatchPendingAsync(Int32 batchSize, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 90
+2025-11-29 07:38:19.240 -03:00 [INF] Executed DbCommand (2ms) [Parameters=[@p3='?' (DbType = Guid), @p0='?', @p1='?' (DbType = Int32), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+UPDATE outbox_messages SET "LastError" = @p0, "RetryCount" = @p1, "Status" = @p2
+WHERE "Id" = @p3;
+2025-11-29 07:38:19.241 -03:00 [INF] Executing StatusCodeResult, setting HTTP status code 204
+2025-11-29 07:38:19.241 -03:00 [INF] Executed action Accounts.API.Controllers.AccountsController.Transfer (Accounts.API) in 4279.9168ms
+2025-11-29 07:38:19.241 -03:00 [INF] Executed endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 07:38:19.241 -03:00 [INF] HTTP POST /api/Accounts/transfer responded 204 in 4282.0313 ms
+2025-11-29 07:38:19.241 -03:00 [INF] Request finished HTTP/2 POST https://localhost:44318/api/Accounts/transfer - 204 null null 4283.9029ms
+2025-11-29 07:40:42.817 -03:00 [INF] Request starting HTTP/2 POST https://localhost:44318/api/Accounts/transfer - application/json 135
+2025-11-29 07:40:42.825 -03:00 [INF] Executing endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 07:40:42.825 -03:00 [INF] Route matched with {action = "Transfer", controller = "Accounts"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Transfer(Accounts.Application.Accounts.Commands.TransferFundsCommand) on controller Accounts.API.Controllers.AccountsController (Accounts.API).
+2025-11-29 07:40:42.852 -03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 07:40:42.862 -03:00 [INF] Executed DbCommand (4ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 07:40:42.874 -03:00 [INF] Executed DbCommand (2ms) [Parameters=[@p1='?' (DbType = Guid), @p0='?' (DbType = Decimal), @p3='?' (DbType = Guid), @p2='?' (DbType = Decimal), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?', @p7='?' (DbType = Object), @p8='?', @p9='?' (DbType = DateTime), @p10='?' (DbType = Int32), @p11='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE accounts SET "Balance" = @p0
+WHERE "Id" = @p1;
+UPDATE accounts SET "Balance" = @p2
+WHERE "Id" = @p3;
+INSERT INTO outbox_messages ("Id", "CreatedAtUtc", "LastError", "Payload", "RoutingKey", "SentAtUtc", "Status", "Type")
+VALUES (@p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11)
+RETURNING "RetryCount";
+2025-11-29 07:40:42.877 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT o."Id", o."CreatedAtUtc", o."LastError", o."Payload", o."RetryCount", o."RoutingKey", o."SentAtUtc", o."Status", o."Type"
+FROM outbox_messages AS o
+WHERE o."Status" = 0
+ORDER BY o."CreatedAtUtc"
+LIMIT @__p_0
+2025-11-29 07:40:42.879 -03:00 [INF] OutboxDispatcher: dispatching 2 pending messages...
+2025-11-29 07:40:47.125 -03:00 [ERR] OutboxDispatcher: error dispatching OutboxMessage "befc5589-d305-4e88-a9e9-da7385c16042"
+RabbitMQ.Client.Exceptions.BrokerUnreachableException: None of the specified endpoints were reachable
+ ---> System.AggregateException: One or more errors occurred. (Connection failed, host 127.0.0.1:5672)
+ ---> RabbitMQ.Client.Exceptions.ConnectFailureException: Connection failed, host 127.0.0.1:5672
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.OpenAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFrameHandler.CreateAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateFrameHandlerAsync(AmqpTcpEndpoint endpoint, CancellationToken cancellationToken)
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Framing.AutorecoveringConnection.CreateAsync(ConnectionConfig config, IEndpointResolver endpoints, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.GetOrCreateChannelAsync(CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 85
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.PublishAsync[T](T event, String routingKey, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 125
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.DispatchTransferCompletedAsync(OutboxMessage message, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 145
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.DispatchPendingAsync(Int32 batchSize, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 90
+2025-11-29 07:40:51.299 -03:00 [ERR] OutboxDispatcher: error dispatching OutboxMessage "5fc7c3ba-236b-46c1-9711-9e87d544ab84"
+RabbitMQ.Client.Exceptions.BrokerUnreachableException: None of the specified endpoints were reachable
+ ---> System.AggregateException: One or more errors occurred. (Connection failed, host 127.0.0.1:5672)
+ ---> RabbitMQ.Client.Exceptions.ConnectFailureException: Connection failed, host 127.0.0.1:5672
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.OpenAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFrameHandler.CreateAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateFrameHandlerAsync(AmqpTcpEndpoint endpoint, CancellationToken cancellationToken)
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Framing.AutorecoveringConnection.CreateAsync(ConnectionConfig config, IEndpointResolver endpoints, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.GetOrCreateChannelAsync(CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 85
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.PublishAsync[T](T event, String routingKey, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 125
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.DispatchTransferCompletedAsync(OutboxMessage message, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 145
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.DispatchPendingAsync(Int32 batchSize, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 90
+2025-11-29 07:40:51.304 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[@p3='?' (DbType = Guid), @p0='?', @p1='?' (DbType = Int32), @p2='?' (DbType = Int32), @p6='?' (DbType = Guid), @p4='?' (DbType = Int32), @p5='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+UPDATE outbox_messages SET "LastError" = @p0, "RetryCount" = @p1, "Status" = @p2
+WHERE "Id" = @p3;
+UPDATE outbox_messages SET "RetryCount" = @p4, "Status" = @p5
+WHERE "Id" = @p6;
+2025-11-29 07:40:51.305 -03:00 [INF] Executing StatusCodeResult, setting HTTP status code 204
+2025-11-29 07:40:51.305 -03:00 [INF] Executed action Accounts.API.Controllers.AccountsController.Transfer (Accounts.API) in 8479.8925ms
+2025-11-29 07:40:51.305 -03:00 [INF] Executed endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 07:40:51.305 -03:00 [INF] HTTP POST /api/Accounts/transfer responded 204 in 8480.8066 ms
+2025-11-29 07:40:51.306 -03:00 [INF] Request finished HTTP/2 POST https://localhost:44318/api/Accounts/transfer - 204 null null 8488.5468ms
+2025-11-29 08:11:15.419 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/swagger/index.html - null null
+2025-11-29 08:11:15.677 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-29 08:11:15.678 -03:00 [INF] Hosting environment: Development
+2025-11-29 08:11:15.679 -03:00 [INF] Content root path: C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.API
+2025-11-29 08:11:16.041 -03:00 [INF] HTTP GET /swagger/index.html responded 200 in 169.5176 ms
+2025-11-29 08:11:16.067 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-29 08:11:16.082 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/swagger/index.html - 200 null text/html;charset=utf-8 689.5273ms
+2025-11-29 08:11:16.084 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript; charset=utf-8 16.1517ms
+2025-11-29 08:11:16.237 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/_vs/browserLink - null null
+2025-11-29 08:11:16.387 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/_vs/browserLink - 200 null text/javascript; charset=UTF-8 145.5449ms
+2025-11-29 08:11:16.882 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/swagger/v1/swagger.json - null null
+2025-11-29 08:11:16.901 -03:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 16.8613 ms
+2025-11-29 08:11:16.905 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 23.2294ms
+2025-11-29 08:11:39.450 -03:00 [INF] Request starting HTTP/2 POST https://localhost:44318/api/Accounts/transfer - application/json 135
+2025-11-29 08:11:39.462 -03:00 [INF] Executing endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 08:11:39.492 -03:00 [INF] Route matched with {action = "Transfer", controller = "Accounts"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Transfer(Accounts.Application.Accounts.Commands.TransferFundsCommand) on controller Accounts.API.Controllers.AccountsController (Accounts.API).
+2025-11-29 08:11:39.496 -03:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2025-11-29 08:11:41.609 -03:00 [INF] Executed DbCommand (87ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 08:11:41.792 -03:00 [INF] Executed DbCommand (8ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 08:11:42.195 -03:00 [INF] Executed DbCommand (40ms) [Parameters=[@p1='?' (DbType = Guid), @p0='?' (DbType = Decimal), @p3='?' (DbType = Guid), @p2='?' (DbType = Decimal), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?', @p7='?' (DbType = Object), @p8='?', @p9='?' (DbType = DateTime), @p10='?' (DbType = Int32), @p11='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE accounts SET "Balance" = @p0
+WHERE "Id" = @p1;
+UPDATE accounts SET "Balance" = @p2
+WHERE "Id" = @p3;
+INSERT INTO outbox_messages ("Id", "CreatedAtUtc", "LastError", "Payload", "RoutingKey", "SentAtUtc", "Status", "Type")
+VALUES (@p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11)
+RETURNING "RetryCount";
+2025-11-29 08:11:46.606 -03:00 [ERR] OutboxDispatcher: error dispatching OutboxMessage "5b53b91e-8115-4c61-84e2-9b538a1fa6ad"
+RabbitMQ.Client.Exceptions.BrokerUnreachableException: None of the specified endpoints were reachable
+ ---> System.AggregateException: One or more errors occurred. (Connection failed, host 127.0.0.1:5672)
+ ---> RabbitMQ.Client.Exceptions.ConnectFailureException: Connection failed, host 127.0.0.1:5672
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.Impl.SocketFactory.ConnectUsingAddressFamilyAsync(IPEndPoint endpoint, Func`2 socketFactory, AddressFamily family, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFactory.OpenAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFrameHandler.CreateAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateFrameHandlerAsync(AmqpTcpEndpoint endpoint, CancellationToken cancellationToken)
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Framing.AutorecoveringConnection.CreateAsync(ConnectionConfig config, IEndpointResolver endpoints, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.GetOrCreateChannelAsync(CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 85
+   at Accounts.Infrastructure.Messaging.RabbitMqEventBus.PublishAsync[T](T event, String routingKey, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Messaging\RabbitMqEventBus.cs:line 125
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.DispatchTransferCompletedAsync(OutboxMessage message, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 129
+   at Accounts.Infrastructure.Outbox.OutboxDispatcher.ProcessMessageAsync(OutboxMessage message, CancellationToken ct) in C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.Infrastructure\Outbox\OutboxDispatcher.cs:line 83
+2025-11-29 08:11:46.652 -03:00 [INF] Executed DbCommand (2ms) [Parameters=[@p3='?' (DbType = Guid), @p0='?', @p1='?' (DbType = Int32), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+UPDATE outbox_messages SET "LastError" = @p0, "RetryCount" = @p1, "Status" = @p2
+WHERE "Id" = @p3;
+2025-11-29 08:11:46.663 -03:00 [INF] Executing StatusCodeResult, setting HTTP status code 204
+2025-11-29 08:11:46.668 -03:00 [INF] Executed action Accounts.API.Controllers.AccountsController.Transfer (Accounts.API) in 7171.7525ms
+2025-11-29 08:11:46.669 -03:00 [INF] Executed endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 08:11:46.670 -03:00 [INF] HTTP POST /api/Accounts/transfer responded 204 in 7217.0448 ms
+2025-11-29 08:11:46.687 -03:00 [INF] Request finished HTTP/2 POST https://localhost:44318/api/Accounts/transfer - 204 null null 7236.9867ms
+2025-11-29 10:43:54.764 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/swagger/index.html - null null
+2025-11-29 10:43:55.050 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-29 10:43:55.052 -03:00 [INF] Hosting environment: Development
+2025-11-29 10:43:55.052 -03:00 [INF] Content root path: C:\projects\Training\MicrosoftNet\Fintech\Fintech.Accounts\Accounts.API
+2025-11-29 10:43:55.690 -03:00 [INF] HTTP GET /swagger/index.html responded 200 in 317.1982 ms
+2025-11-29 10:43:55.771 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/swagger/index.html - 200 null text/html;charset=utf-8 1009.0405ms
+2025-11-29 10:43:55.888 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/_vs/browserLink - null null
+2025-11-29 10:43:55.980 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-29 10:43:56.010 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript; charset=utf-8 12.8808ms
+2025-11-29 10:43:56.082 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/_vs/browserLink - 200 null text/javascript; charset=UTF-8 196.0306ms
+2025-11-29 10:43:58.292 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44318/swagger/v1/swagger.json - null null
+2025-11-29 10:43:58.358 -03:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 62.2812 ms
+2025-11-29 10:43:58.423 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44318/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 130.3575ms
+2025-11-29 10:45:09.325 -03:00 [INF] Request starting HTTP/2 POST https://localhost:44318/api/Accounts/transfer - application/json 135
+2025-11-29 10:45:09.344 -03:00 [INF] Executing endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 10:45:09.386 -03:00 [INF] Route matched with {action = "Transfer", controller = "Accounts"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Transfer(Accounts.Application.Accounts.Commands.TransferFundsCommand) on controller Accounts.API.Controllers.AccountsController (Accounts.API).
+2025-11-29 10:45:09.391 -03:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2025-11-29 10:45:11.965 -03:00 [INF] Executed DbCommand (98ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 10:45:12.091 -03:00 [INF] Executed DbCommand (8ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 10:45:12.349 -03:00 [INF] Executed DbCommand (32ms) [Parameters=[@p1='?' (DbType = Guid), @p0='?' (DbType = Decimal), @p3='?' (DbType = Guid), @p2='?' (DbType = Decimal), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?', @p7='?' (DbType = Object), @p8='?', @p9='?' (DbType = DateTime), @p10='?' (DbType = Int32), @p11='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE accounts SET "Balance" = @p0
+WHERE "Id" = @p1;
+UPDATE accounts SET "Balance" = @p2
+WHERE "Id" = @p3;
+INSERT INTO outbox_messages ("Id", "CreatedAtUtc", "LastError", "Payload", "RoutingKey", "SentAtUtc", "Status", "Type")
+VALUES (@p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11)
+RETURNING "RetryCount";
+2025-11-29 10:45:12.606 -03:00 [INF] RabbitMqEventBus connected to localhost vhost /, exchange fintech.events
+2025-11-29 10:45:12.627 -03:00 [INF] Event published in RabbitMQ: Type TransferCompleted, RoutingKey transfer.completed
+2025-11-29 10:45:12.634 -03:00 [INF] Executed DbCommand (4ms) [Parameters=[@p2='?' (DbType = Guid), @p0='?' (DbType = DateTime), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+UPDATE outbox_messages SET "SentAtUtc" = @p0, "Status" = @p1
+WHERE "Id" = @p2;
+2025-11-29 10:45:12.644 -03:00 [INF] Executing StatusCodeResult, setting HTTP status code 204
+2025-11-29 10:45:12.648 -03:00 [INF] Executed action Accounts.API.Controllers.AccountsController.Transfer (Accounts.API) in 3258.0044ms
+2025-11-29 10:45:12.649 -03:00 [INF] Executed endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 10:45:12.650 -03:00 [INF] HTTP POST /api/Accounts/transfer responded 204 in 3321.3699 ms
+2025-11-29 10:45:12.661 -03:00 [INF] Request finished HTTP/2 POST https://localhost:44318/api/Accounts/transfer - 204 null null 3336.06ms
+2025-11-29 10:47:36.006 -03:00 [INF] Request starting HTTP/2 POST https://localhost:44318/api/Accounts/transfer - application/json 135
+2025-11-29 10:47:36.007 -03:00 [INF] Executing endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 10:47:36.007 -03:00 [INF] Route matched with {action = "Transfer", controller = "Accounts"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Transfer(Accounts.Application.Accounts.Commands.TransferFundsCommand) on controller Accounts.API.Controllers.AccountsController (Accounts.API).
+2025-11-29 10:47:36.114 -03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 10:47:36.129 -03:00 [INF] Executed DbCommand (3ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."Balance", a."OwnerName"
+FROM accounts AS a
+WHERE a."Id" = @__p_0
+LIMIT 1
+2025-11-29 10:47:36.136 -03:00 [INF] Executed DbCommand (2ms) [Parameters=[@p1='?' (DbType = Guid), @p0='?' (DbType = Decimal), @p3='?' (DbType = Guid), @p2='?' (DbType = Decimal), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?', @p7='?' (DbType = Object), @p8='?', @p9='?' (DbType = DateTime), @p10='?' (DbType = Int32), @p11='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE accounts SET "Balance" = @p0
+WHERE "Id" = @p1;
+UPDATE accounts SET "Balance" = @p2
+WHERE "Id" = @p3;
+INSERT INTO outbox_messages ("Id", "CreatedAtUtc", "LastError", "Payload", "RoutingKey", "SentAtUtc", "Status", "Type")
+VALUES (@p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11)
+RETURNING "RetryCount";
+2025-11-29 10:47:36.158 -03:00 [INF] Event published in RabbitMQ: Type TransferCompleted, RoutingKey transfer.completed
+2025-11-29 10:47:36.162 -03:00 [INF] Executed DbCommand (2ms) [Parameters=[@p2='?' (DbType = Guid), @p0='?' (DbType = DateTime), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+UPDATE outbox_messages SET "SentAtUtc" = @p0, "Status" = @p1
+WHERE "Id" = @p2;
+2025-11-29 10:47:36.164 -03:00 [INF] Executing StatusCodeResult, setting HTTP status code 204
+2025-11-29 10:47:36.165 -03:00 [INF] Executed action Accounts.API.Controllers.AccountsController.Transfer (Accounts.API) in 157.0723ms
+2025-11-29 10:47:36.165 -03:00 [INF] Executed endpoint 'Accounts.API.Controllers.AccountsController.Transfer (Accounts.API)'
+2025-11-29 10:47:36.165 -03:00 [INF] HTTP POST /api/Accounts/transfer responded 204 in 158.2548 ms
+2025-11-29 10:47:36.166 -03:00 [INF] Request finished HTTP/2 POST https://localhost:44318/api/Accounts/transfer - 204 null null 160.2219ms

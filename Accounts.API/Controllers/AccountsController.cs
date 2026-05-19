@@ -1,4 +1,5 @@
-﻿using Accounts.Application.Accounts.Commands;
+﻿using Accounts.API.Requests;
+using Accounts.Application.Accounts.Commands;
 using Accounts.Application.Accounts.DTOs;
 using Accounts.Application.Accounts.Queries.GetById;
 using MediatR;
@@ -22,13 +23,19 @@ namespace Accounts.API.Controllers
         public async Task<ActionResult<AccountDto>> Get(Guid id)
         {
             var dto = await _mediator.Send(new GetAccountByIdQuery(id));
-            return dto is null ? NotFound(NotFound($"Account {id} not found.")) : Ok(dto);
+            return dto is null ? NotFound($"Account {id} not found.") : Ok(dto);
         }
 
         [HttpPost("transfer")]
-        public async Task<IActionResult> Transfer([FromBody] TransferFundsCommand command)
+        public async Task<IActionResult> Transfer([FromBody] TransferRequest request)
         {
-            await _mediator.Send(command); // devuelve Unit, pero no lo usamos
+            var command = new TransferFundsCommand
+            {
+                FromAccountId = request.FromAccountId,
+                ToAccountId = request.ToAccountId,
+                Amount = request.Amount
+            };
+            await _mediator.Send(command);
             return NoContent();
         }
     }

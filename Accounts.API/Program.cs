@@ -31,7 +31,6 @@ builder.Host.UseSerilog();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // EF Core + Npgsql + Optional Seeder
-// 1) Tomamos el flag desde appsettings.Development.json (default true si no existe)
 bool seedingEnabled = builder.Configuration.GetValue<bool>("Seeding:Enabled", true);
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -39,11 +38,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 #if DEBUG
     if (builder.Environment.IsDevelopment() && seedingEnabled)
     {
-        // Ejecuta el seeding en Dev cuando EF corre Migrate/EnsureCreated/Update-Database
         options
             .UseSeeding((ctx, _) =>
              {
-                 // tooling de EF puede requerir sync: invocamos el método async de forma síncrona
+                 // EF tooling may require sync: invoke async method synchronously
                  AccountsDevSeed.RunAsync((AppDbContext)ctx, CancellationToken.None).GetAwaiter().GetResult();
              })
             .UseAsyncSeeding(async (ctx, _, ct) =>
@@ -55,9 +53,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 // Messaging
-//builder.Services.AddSingleton<IEventBus, InMemoryEventBus>(); // Proceso local
 builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMQ"));
-builder.Services.AddSingleton<IEventBus, RabbitMqEventBus>(); // RabbitMQ
+builder.Services.AddSingleton<IEventBus, RabbitMqEventBus>();
 
 // Accounts repository
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -65,15 +62,14 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 // OutboxMessage repository
 builder.Services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
 
-// Dispatcher de outbox (nuevo)
 builder.Services.AddScoped<IOutboxDispatcher, OutboxDispatcher>();
 
-// Mapster (scan perfiles en Application)
+// Mapster (scan profiles in Application)
 var cfg = TypeAdapterConfig.GlobalSettings;
 cfg.Scan(Assembly.GetAssembly(typeof(MappingRegister))!);
 builder.Services.AddSingleton(cfg);
-// builder.Services.AddScoped<IMapper, ServiceMapper>(); ServiceMapper no está en la versión 7.4.0
-// Solución que no depende de ServiceMapper
+// builder.Services.AddScoped<IMapper, ServiceMapper>(); // ServiceMapper not available in Mapster 7.4.0
+// Alternative that avoids ServiceMapper dependency
 builder.Services.AddScoped<IMapper>(sp =>
     new Mapper(sp.GetRequiredService<TypeAdapterConfig>()));
 
@@ -87,10 +83,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//// Solo Dev/Test
-//#if DEBUG
-//// builder.Services.AddDbContext<NotificationsDb>(opt => opt.UseInMemoryDatabase("notifis"));
-//#endif
 //builder.Services.AddDbContext<NotificationsDb>(
 //    opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("NotificationsDb")));
 

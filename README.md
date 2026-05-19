@@ -2,6 +2,14 @@
 
 Accounts microservice managing account balances and fund transfers. Publishes integration events via RabbitMQ using the transactional outbox pattern.
 
+## What this demonstrates
+
+- **Transactional outbox pattern** — account changes and outbox message saved atomically; guaranteed at-least-once delivery even if RabbitMQ is temporarily unavailable
+- **CQRS + MediatR + FluentValidation pipeline** — commands and queries dispatched through MediatR with a `ValidationBehavior` pipeline that validates before any handler runs
+- **Testcontainers integration tests** — integration tests spin up real PostgreSQL and RabbitMQ containers via Testcontainers; no mocks, no in-memory substitutes
+- **Clean Architecture with DDD aggregate encapsulation** — `Account` entity exposes only `Credit()`/`Debit()` domain methods; `Balance` and `OwnerName` have private setters enforcing invariants at the domain layer
+- **MCP server integration layer** — `Fintech.Accounts.McpServer` exposes account and transfer data as MCP tools for AI agent access
+
 ## Architecture
 
 Clean Architecture with CQRS via MediatR. Dependency flows inward:

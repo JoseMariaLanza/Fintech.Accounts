@@ -3,8 +3,8 @@
     public class Account
     {
         public Guid Id { get; private set; } = Guid.NewGuid();
-        public string OwnerName { get; set;} = string.Empty;
-        public decimal Balance { get; set;}
+        public string OwnerName { get; private set; } = string.Empty;
+        public decimal Balance { get; private set; }
 
         public Account() { }
 
